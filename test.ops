@@ -1,0 +1,4 @@
+import("tf_publisher")
+loadComponent("tp", "Tf_publisher")
+tp.numSegments = 3
+tp.configure()
