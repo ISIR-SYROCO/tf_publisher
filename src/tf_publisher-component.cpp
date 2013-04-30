@@ -1,9 +1,10 @@
 #include "tf_publisher-component.hpp"
 #include <rtt/Component.hpp>
+#include <ros/ros.h>
 
 
 Tf_publisher::Tf_publisher(std::string const& name)
-	: TaskContext(name),
+	: TaskContext(name, PreOperational),
 	  number_of_segments(0){
 		this->addProperty("numSegments", number_of_segments).doc("number of link of the robot");
 		std::cout << "Tf_publisher constructed !" <<std::endl;
@@ -31,7 +32,16 @@ bool Tf_publisher::startHook(){
 }
 
 void Tf_publisher::updateHook(){
-	std::cout << "Tf_publisher executes updateHook !" <<std::endl;
+	int i = 0;
+	for(std::vector< RTT::OutputPort < tf::StampedTransform >* >::iterator it = _oports.begin();
+			it != _oports.end();
+			++it){
+		std::ostringstream ss_segment_name;
+		ss_segment_name << "segment_" << i;
+		i++;
+		tf::Transform transform;
+		tf::StampedTransform(transform, ros::Time::now(), "world", ss_segment_name.str());
+	}
 }
 
 void Tf_publisher::stopHook(){
@@ -45,6 +55,7 @@ void Tf_publisher::cleanupHook(){
 void Tf_publisher::createPorts(){
 	_oports.resize(number_of_segments);
 	for (unsigned int i=0; i<number_of_segments; i++){
+
 		std::ostringstream ss_segName;
 		ss_segName << "segment" << i;
 
