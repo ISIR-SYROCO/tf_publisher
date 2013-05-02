@@ -8,6 +8,8 @@
     <depend package="rtt" />
 	<depend package="rtt_std_msgs"/>
 	<depend package="rtt_geometry_msgs"/>
+	<depend package="eigen_lgsm"/>
+	<depend package="tf_lgsm"/>
 	<depend package="tf_conversions"/>
 </package>
 
