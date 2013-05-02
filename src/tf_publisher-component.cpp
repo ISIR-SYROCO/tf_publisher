@@ -1,4 +1,5 @@
 #include "tf_publisher-component.hpp"
+#include <tf_lgsm/tf_lgsm.h>
 #include <rtt/Component.hpp>
 #include <ros/ros.h>
 
@@ -33,13 +34,34 @@ bool Tf_publisher::startHook(){
 
 void Tf_publisher::updateHook(){
 	int i = 0;
+
+	Eigen::Displacementd p1(0.0, 0.0, 0.35999999999999999, 1.0, 0.0, 0.0, 0.0);
+	Eigen::Displacementd p2(0.0, 0.0, 0.35999999999999999, 0.85965458317679577, 0.0, 0.0, 0.51087571641557739);
+	Eigen::Displacementd p3(0.0, 0.0, 0.35999999999999999, 0.79333436744057395, -0.19676561949834656, 0.3310990543848395, 0.47146292389387456);
+	Eigen::Displacementd p4(0.13592386699527353, 0.24976120034624139, 0.64132551463146004, 0.29964378078697473, 0.064289416465290863, 0.37974988827019718,	0.87285193356319746);
+	Eigen::Displacementd p5(0.13592386699527353, 0.24976120034624139, 0.64132551463146004,	-0.55145571137898231, 0.042101567767920102, -0.67963241931357277, 0.48189607904294474);
+	Eigen::Displacementd p6(0.44408295955948468, 0.01241106286408053, 0.66966075606684139, -0.72583622489357003, -0.34005998850496433, -0.58994234600386186, 0.097411535465335236);
+	Eigen::Displacementd p7(0.44408295955948468, 0.01241106286408053, 0.66966075606684139, -0.33772857879309282, -0.8107157428040318, -0.3111036553014388, -0.3631720075861965);
+	Eigen::Displacementd p8(0.44408295955948468, 0.01241106286408053, 0.66966075606684139, -0.33870416921432822, -0.80987604484114317, -0.31328308598562427, -0.36226231626353628);
+
+	std::vector<Eigen::Displacementd> vd;
+	vd.push_back(p1);
+	vd.push_back(p2);
+	vd.push_back(p3);
+	vd.push_back(p4);
+	vd.push_back(p5);
+	vd.push_back(p6);
+	vd.push_back(p7);
+	vd.push_back(p8);
+
 	for(std::vector< RTT::OutputPort < tf::StampedTransform >* >::iterator it = _oports.begin();
 			it != _oports.end();
 			++it){
 		std::ostringstream ss_segment_name;
 		ss_segment_name << "segment_" << i;
-		i++;
 		tf::Transform transform;
+		tf::LgsmDisplacementToTransformTF(vd[i], transform);
+		i++;
 		tf::StampedTransform(transform, ros::Time::now(), "world", ss_segment_name.str());
 	}
 }
