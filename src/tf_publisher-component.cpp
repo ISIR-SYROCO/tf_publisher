@@ -2,7 +2,7 @@
 #include <tf_lgsm/tf_lgsm.h>
 #include <rtt/Component.hpp>
 #include <ros/ros.h>
-
+#include <tf/transform_broadcaster.h>
 
 Tf_publisher::Tf_publisher(std::string const& name)
 	: TaskContext(name, PreOperational),
@@ -18,7 +18,7 @@ bool Tf_publisher::configureHook(){
 	}
 
 	createPorts();
-
+    ros::start();
 	std::cout << "Tf_publisher configured !" <<std::endl;
 	return true;
 }
@@ -33,7 +33,6 @@ bool Tf_publisher::startHook(){
 }
 
 void Tf_publisher::updateHook(){
-	int i = 0;
 
 	Eigen::Displacementd p1(0.0, 0.0, 0.35999999999999999, 1.0, 0.0, 0.0, 0.0);
 	Eigen::Displacementd p2(0.0, 0.0, 0.35999999999999999, 0.85965458317679577, 0.0, 0.0, 0.51087571641557739);
@@ -54,15 +53,17 @@ void Tf_publisher::updateHook(){
 	vd.push_back(p7);
 	vd.push_back(p8);
 
-	for(std::vector< RTT::OutputPort < tf::StampedTransform >* >::iterator it = _oports.begin();
-			it != _oports.end();
-			++it){
+	//for(std::vector< RTT::OutputPort < tf::StampedTransform >* >::iterator it = _oports.begin();
+	//		it != _oports.end();
+	//		++it){
+	for(int i=0; i<8; ++i){
 		std::ostringstream ss_segment_name;
 		ss_segment_name << "segment_" << i;
 		tf::Transform transform;
 		tf::LgsmDisplacementToTransformTF(vd[i], transform);
-		i++;
-		tf::StampedTransform(transform, ros::Time::now(), "world", ss_segment_name.str());
+
+		static tf::TransformBroadcaster br;
+		br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", ss_segment_name.str()));
 	}
 }
 
@@ -75,15 +76,15 @@ void Tf_publisher::cleanupHook(){
 }
 
 void Tf_publisher::createPorts(){
-	_oports.resize(number_of_segments);
-	for (unsigned int i=0; i<number_of_segments; i++){
-
-		std::ostringstream ss_segName;
-		ss_segName << "segment" << i;
-
-		_oports[i] = new RTT::OutputPort< tf::StampedTransform >(ss_segName.str());
-		this->addPort(*(_oports[i]));
-	}
+//	_oports.resize(number_of_segments);
+//	for (unsigned int i=0; i<number_of_segments; i++){
+//
+//		std::ostringstream ss_segName;
+//		ss_segName << "segment" << i;
+//
+//		_oports[i] = new RTT::OutputPort< tf::tfMessage >(ss_segName.str());
+//		this->addPort(*(_oports[i]));
+//	}
 
 }
 

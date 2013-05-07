@@ -7,6 +7,7 @@
 #include <iostream>
 #include <ros/ros.h>
 #include <tf/tf.h>
+#include <tf/tfMessage.h>
 #include<Eigen/Core>
 #include<Eigen/Lgsm>
 
@@ -30,7 +31,7 @@ class Tf_publisher
 
  public:
 	unsigned int number_of_segments;
-	std::vector< RTT::OutputPort< tf::StampedTransform >*  > _oports;
+	//std::vector< RTT::OutputPort< tf::tfMessage >*  > _oports;
 
 
 };
