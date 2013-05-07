@@ -1,4 +1,6 @@
+import("ocl")
 import("tf_publisher")
 loadComponent("tp", "Tf_publisher")
+server("tp", true)
 tp.numSegments = 3
 tp.configure()
